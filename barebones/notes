@@ -1,0 +1,13 @@
+/mnt/ismenaos/usr/bin/clang -c --target=i386-elf \
+    start.s -o start.o
+
+/mnt/ismenaos/tools/install-ldc/bin/ldc2 -c -g --march=x86 \
+    --unroll-runtime \
+    -betterC \
+    kernel.main.d -D kernel.main.o 
+
+/mnt/ismenaos/usr/bin/ld.lld -melf_i386 -T linker.ld -o kernel.bin start.o kernel.main.o
+
+llvm-objdump -dS start.o
+
+qemu-system-i386 -kernel kernel.bin
